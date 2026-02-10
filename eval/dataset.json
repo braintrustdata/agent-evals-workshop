@@ -1,0 +1,72 @@
+[
+  {
+    "input": "How much revenue did we earn last week?",
+    "expected": {
+      "values": [8225.91],
+      "strings": []
+    },
+    "metadata": {
+      "sql_query": "SELECT ROUND(SUM(total_price), 2) FROM purchases WHERE purchase_date >= '2025-01-06' AND purchase_date <= '2025-01-12'"
+    }
+  },
+  {
+    "input": "What are the top 3 product categories by revenue last month?",
+    "expected": {
+      "values": [18296.1, 12601.93, 8579.84],
+      "strings": ["Electronics", "Clothing", "Home & Kitchen"]
+    },
+    "metadata": {
+      "sql_query": "SELECT p.category, ROUND(SUM(pu.total_price), 2) as revenue FROM purchases pu JOIN products p ON pu.product_id = p.product_id WHERE pu.purchase_date >= '2024-12-01' AND pu.purchase_date <= '2024-12-31' GROUP BY p.category ORDER BY revenue DESC LIMIT 3"
+    }
+  },
+  {
+    "input": "How many customers used the HOLIDAY15 promo code?",
+    "expected": {
+      "values": [150],
+      "strings": []
+    },
+    "metadata": {
+      "sql_query": "SELECT COUNT(DISTINCT customer_id) FROM purchases WHERE promo_code = 'HOLIDAY15'"
+    }
+  },
+  {
+    "input": "What was the average order value last month?",
+    "expected": {
+      "values": [52.1],
+      "strings": []
+    },
+    "metadata": {
+      "sql_query": "SELECT ROUND(AVG(total_price), 2) FROM purchases WHERE purchase_date >= '2024-12-01' AND purchase_date <= '2024-12-31'"
+    }
+  },
+  {
+    "input": "What is the best-selling book genre?",
+    "expected": {
+      "values": [230],
+      "strings": ["Fiction"]
+    },
+    "metadata": {
+      "sql_query": "SELECT p.subcategory, SUM(pu.quantity) as total_sold FROM purchases pu JOIN products p ON pu.product_id = p.product_id WHERE p.category = 'Books' GROUP BY p.subcategory ORDER BY total_sold DESC LIMIT 1"
+    }
+  },
+  {
+    "input": "What is the total discount amount from all promo codes?",
+    "expected": {
+      "values": [6784.92],
+      "strings": []
+    },
+    "metadata": {
+      "sql_query": "SELECT ROUND(SUM(discount_amount), 2) FROM purchases WHERE promo_code IS NOT NULL"
+    }
+  },
+  {
+    "input": "Which are the top 5 states by revenue?",
+    "expected": {
+      "values": [22098.6, 20175.31, 15699.45, 14349.68, 14092.32],
+      "strings": ["TX", "CA", "NY", "OH", "FL"]
+    },
+    "metadata": {
+      "sql_query": "SELECT c.state, ROUND(SUM(pu.total_price), 2) as revenue FROM purchases pu JOIN customers c ON pu.customer_id = c.customer_id GROUP BY c.state ORDER BY revenue DESC LIMIT 5"
+    }
+  }
+]
