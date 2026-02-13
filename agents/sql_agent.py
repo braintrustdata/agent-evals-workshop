@@ -29,7 +29,7 @@ class SQLAgent(BaseAgent):
         else:
             return json.dumps({"error": f"Unknown tool: {name}"})
 
-    @braintrust.traced
+    @braintrust.traced(name="sql_agent_run")
     def run(self, user_message: str) -> dict:
         result = super().run(user_message)
         result["sql_query"] = self._last_sql_query

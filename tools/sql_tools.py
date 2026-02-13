@@ -10,7 +10,7 @@ import braintrust
 DB_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data", "ecommerce.db")
 
 
-@braintrust.traced
+@braintrust.traced(name="run_sql_query")
 def run_sql_query(query: str) -> str:
     """Execute a SQL query and return results as a list of dicts."""
     conn = sqlite3.connect(DB_PATH)
@@ -26,7 +26,7 @@ def run_sql_query(query: str) -> str:
         conn.close()
 
 
-@braintrust.traced
+@braintrust.traced(name="list_tables")
 def list_tables() -> str:
     """List all tables in the database."""
     conn = sqlite3.connect(DB_PATH)
@@ -41,7 +41,7 @@ def list_tables() -> str:
         conn.close()
 
 
-@braintrust.traced
+@braintrust.traced(name="describe_table")
 def describe_table(table_name: str) -> str:
     """Describe the schema of a table."""
     # Sanitize table name to prevent SQL injection

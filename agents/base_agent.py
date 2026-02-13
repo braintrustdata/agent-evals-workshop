@@ -5,6 +5,9 @@ import os
 
 import braintrust
 from openai import OpenAI
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Module-level singletons
 BRAINTRUST_API_KEY = os.environ.get("BRAINTRUST_API_KEY", "")
@@ -31,7 +34,7 @@ class BaseAgent:
         """Execute a tool by name. Override in subclasses."""
         raise NotImplementedError(f"Tool '{name}' not implemented")
 
-    @braintrust.traced
+    @braintrust.traced(name="base_agent_run")
     def run(self, user_message: str) -> dict:
         """Run the agent with a user message through the tool-calling loop."""
         messages = [
@@ -46,6 +49,10 @@ class BaseAgent:
                 tools=self.tools if self.tools else None,
             )
 
+            # Validate we got a real response from the LLM
+            if not response or not response.choices:
+                raise ValueError("No response from LLM - check API configuration")
+
             message = response.choices[0].message
             messages.append(message)
 
@@ -58,7 +65,12 @@ class BaseAgent:
                 func_name = tool_call.function.name
                 func_args = json.loads(tool_call.function.arguments)
 
-                result = self.execute_tool(func_name, func_args)
+                with braintrust.start_span(
+                    name=func_name,
+                    span_attributes={"type": "tool", "input": func_args},
+                ) as span:
+                    result = self.execute_tool(func_name, func_args)
+                    span.log(output=result)
 
                 messages.append({
                     "role": "tool",

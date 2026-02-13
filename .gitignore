@@ -2,3 +2,5 @@
 data/ecommerce.db
 __pycache__/
 .venv/
+*.DS_Store
+TODO.md
