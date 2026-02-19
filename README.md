@@ -72,23 +72,39 @@ python run_agent.py "Which player averages the most assists per game?"
 
 Traces appear automatically in [Braintrust Logs](https://www.braintrust.dev).
 
-## Workshop
+## Chatting with the agent
 
-### Option 1: Online scoring
+```bash
+python chat.py
+```
 
-Run the agent and inspect traces in the Braintrust UI. Add online scorers directly in the Braintrust dashboard to evaluate responses in real time.
+## Online scoring
 
-### Option 2: Offline eval
+Run this script once to upload an LLM-as-judge scorer and configure it to run on `run_sql_query` traces. 
+
+```bash
+python setup_online_scoring.py
+```
+
+Run the agent and inspect scoring span in the Braintrust UI. 
+
+## Offline eval
+
+Upload scorers and dataset to braintrust (only do this once)
+
+```bash
+python setup_offline_eval.py
+```
 
 Run the full eval suite with custom scorers:
 
 ```bash
-python run_eval.py
+python eval/eval_sql_agent.py
 ```
 
-This runs 12 eval cases through the agent and scores each with:
+This runs eval cases through the agent and scores each with:
 - **data_eval** — checks if correct numeric and string values appear in the response
-- **sql_eval** — checks structural similarity of the generated SQL vs. reference SQL
+- **sql_eval** — LLM-as-Judge to check similarity of the generated SQL vs. reference SQL
 
 Results appear in the Braintrust Experiments view.
 
@@ -101,8 +117,9 @@ agent-evals-workshop/
 ├── .env.example
 ├── .gitignore
 ├── setup_db.py                  # Generate SQLite DB with synthetic NBA data
+├── setup_offline_eval.py        # Upload scorers and dataset to BT for offline eval
+├── setup_online_scorer.py       # Upload LLM-as-judge scorer to BT
 ├── run_agent.py                 # Invoke agent with a query
-├── run_eval.py                  # Run Braintrust eval
 ├── agents/
 │   ├── base_agent.py            # Base agent: OpenAI tool-calling loop + tracing
 │   ├── sql_agent.py             # SQL agent with DB tools
@@ -112,6 +129,7 @@ agent-evals-workshop/
 ├── eval/
 │   ├── dataset.json             # 12 eval cases with ground truth
 │   └── scorers.py               # data_eval + sql_eval scorers
+│   └── eval_sql_agent.py        # run offline eval
 ├── data/
 │   └── nba.db                   # Generated SQLite DB (gitignored)
 └── prompts/
