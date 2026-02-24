@@ -14,7 +14,7 @@ from agents.supervisor_agent import SupervisorAgent
 from prompts.sql_prompt import SQL_SYSTEM_PROMPT
 from prompts.supervisor_prompt import SUPERVISOR_SYSTEM_PROMPT
 
-PROJECT = "agent-evals-workshop"
+PROJECT = os.environ.get("BRAINTRUST_PROJECT", "agent-evals-workshop")
 DATASET_NAME = "sql-agent-eval"
 
 

@@ -1,12 +1,13 @@
 """Create an online scorer in Braintrust that evaluates SQL on the run_sql_query span."""
 
 from dotenv import load_dotenv
+import os
 
 load_dotenv()
 
 import braintrust
 
-PROJECT = "agent-evals-workshop"
+PROJECT = os.environ.get("BRAINTRUST_PROJECT", "agent-evals-workshop")
 SCORER_NAME = "SQL Quality"
 SCORER_SLUG = "sql-quality-scorer"
 

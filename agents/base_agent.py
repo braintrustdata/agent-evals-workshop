@@ -11,6 +11,7 @@ load_dotenv()
 
 # Module-level singletons
 BRAINTRUST_API_KEY = os.environ.get("BRAINTRUST_API_KEY", "")
+BRAINTRUST_PROJECT = os.environ.get("BRAINTRUST_PROJECT", "agent-evals-workshop")
 
 client = braintrust.wrap_openai(
     OpenAI(
@@ -19,7 +20,7 @@ client = braintrust.wrap_openai(
     )
 )
 
-logger = braintrust.init_logger(project="agent-evals-workshop")
+logger = braintrust.init_logger(project=BRAINTRUST_PROJECT)
 
 
 class BaseAgent:

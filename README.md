@@ -5,22 +5,22 @@ Build and evaluate a multi-agent NBA analytics system with [Braintrust](https://
 ## Architecture
 
 ```
-User Question
-      │
-      ▼
+ User Question
+       │
+       ▼
 ┌─────────────┐
-│  Supervisor  │  (interprets question, formats response)
-│    Agent     │
+│  Supervisor │  (interprets question, formats response)
+│    Agent    │
 └──────┬──────┘
        │  ask_sql_agent
        ▼
 ┌─────────────┐
-│  SQL Agent   │  (writes & executes SQL queries)
+│  SQL Agent  │  (writes & executes SQL queries)
 └──────┬──────┘
        │  run_sql_query / list_tables / describe_table
        ▼
 ┌─────────────┐
-│   SQLite DB  │  (synthetic NBA 2024-25 season data)
+│   SQLite DB │  (synthetic NBA 2024-25 season data)
 └─────────────┘
 ```
 
@@ -52,8 +52,9 @@ User Question
 3. Set up your environment:
    ```bash
    cp .env.example .env
-   # Edit .env and add your BRAINTRUST_API_KEY
    ```
+   - Edit `.env` and add your `BRAINTRUST_API_KEY`
+   - Edit `BRAINTRUST_PROJECT` if multiple people are using the same Braintrust account
 
 4. Generate the synthetic database:
    ```bash
@@ -65,6 +66,7 @@ User Question
 Ask any NBA analytics question:
 
 ```bash
+python run_agent.py "Which player averages the most rebounds per game this season (minimum 10 games played)?"
 python run_agent.py "Who scored the most points this season?"
 python run_agent.py "Which team has the most wins this season?"
 python run_agent.py "Which player averages the most assists per game?"
@@ -72,7 +74,7 @@ python run_agent.py "Which player averages the most assists per game?"
 
 Traces appear automatically in [Braintrust Logs](https://www.braintrust.dev).
 
-## Chatting with the agent
+Alternatively you can start a chat with the agent by running:
 
 ```bash
 python chat.py
@@ -83,7 +85,7 @@ python chat.py
 Run this script once to upload an LLM-as-judge scorer and configure it to run on `run_sql_query` traces. 
 
 ```bash
-python setup_online_scoring.py
+python setup_online_scorer.py
 ```
 
 Run the agent and inspect scoring span in the Braintrust UI. 
@@ -103,10 +105,17 @@ python eval/eval_sql_agent.py
 ```
 
 This runs eval cases through the agent and scores each with:
+
 - **data_eval** — checks if correct numeric and string values appear in the response
 - **sql_eval** — LLM-as-Judge to check similarity of the generated SQL vs. reference SQL
 
 Results appear in the Braintrust Experiments view.
+
+## Explore further
+
+- Make a new online scorer and configure it to run on a particular span or the [whole trace](https://www.braintrust.dev/docs/evaluate/write-scorers#score-traces)
+- Set up remote eval so you can run evals from the UI - start with `eval/eval_sql_agent_remote.py` and follow the instructions [here](https://www.braintrust.dev/docs/evaluate/remote-evals)
+- Make changes to the SQL agent prompt (located in `prompts/`) or tool calls and run offline eval to test the changes
 
 ## Project structure
 
@@ -128,8 +137,9 @@ agent-evals-workshop/
 │   └── sql_tools.py             # run_sql_query, list_tables, describe_table
 ├── eval/
 │   ├── dataset.json             # 12 eval cases with ground truth
-│   └── scorers.py               # data_eval + sql_eval scorers
-│   └── eval_sql_agent.py        # run offline eval
+│   ├── scorers.py               # data_eval + sql_eval scorers
+│   ├── eval_sql_agent.py        # run offline eval
+│   └── eval_sql_agent_remote.py # run remote eval
 ├── data/
 │   └── nba.db                   # Generated SQLite DB (gitignored)
 └── prompts/

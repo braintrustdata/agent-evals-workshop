@@ -7,11 +7,17 @@ from braintrust import Eval, init_dataset, init_function
 
 from agents.sql_agent import SQLAgent
 
+from dotenv import load_dotenv
+
+load_dotenv()
+
+PROJECT = os.environ.get("BRAINTRUST_PROJECT", "agent-evals-workshop")
+
 Eval(
-    "agent-evals-workshop", 
-    data=init_dataset(project="agent-evals-workshop", name="sql-agent-eval"),
+    PROJECT, 
+    data=init_dataset(project=PROJECT, name="sql-agent-eval"),
     task=lambda input: SQLAgent().run(input),
-    scores=[init_function(project_name="agent-evals-workshop", slug="data_eval"),
-            init_function(project_name="agent-evals-workshop", slug="sql_eval")],
+    scores=[init_function(project_name=PROJECT, slug="data_eval"),
+            init_function(project_name=PROJECT, slug="sql_eval")],
     max_concurrency=5,
 )

@@ -19,7 +19,10 @@ def main():
             break
 
         result = agent.run(user_input)
-        print(f"\nAgent >> {result['response']}\n")
+        print(f"\nAgent >> {result['response']}")
+        if result.get("sql_query"):
+            print(f"\nSQL query used:\n{result['sql_query']}")
+        print()
 
 
 if __name__ == "__main__":

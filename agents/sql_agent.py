@@ -10,9 +10,9 @@ from tools.sql_tools import SQL_TOOLS, run_sql_query, list_tables, describe_tabl
 
 
 class SQLAgent(BaseAgent):
-    def __init__(self):
+    def __init__(self, system_prompt=None):
         super().__init__(
-            system_prompt=SQL_SYSTEM_PROMPT,
+            system_prompt=system_prompt or SQL_SYSTEM_PROMPT,
             tools=SQL_TOOLS,
             model="gpt-5-mini",
         )
