@@ -118,5 +118,35 @@
     "metadata": {
       "sql_query": "SELECT name FROM teams WHERE conference = 'Western' AND division = 'Northwest' ORDER BY name"
     }
+  },
+  {
+    "input": "Which player recorded the most double-doubles (at least 10 points AND at least 10 rebounds in the same game) this season?",
+    "expected": {
+      "values": [22],
+      "strings": ["Kawhi Jackson"]
+    },
+    "metadata": {
+      "sql_query": "SELECT p.first_name || ' ' || p.last_name AS player, COUNT(*) AS double_doubles FROM player_game_stats pgs JOIN players p ON pgs.player_id = p.player_id WHERE pgs.points >= 10 AND pgs.rebounds >= 10 GROUP BY pgs.player_id ORDER BY double_doubles DESC LIMIT 1"
+    }
+  },
+  {
+    "input": "Which team has the biggest positive difference between their home wins and away wins this season?",
+    "expected": {
+      "values": [13, 5, 8],
+      "strings": ["Celtics"]
+    },
+    "metadata": {
+      "sql_query": "WITH home_wins AS (SELECT home_team_id AS team_id, COUNT(*) AS wins FROM games WHERE home_score > away_score GROUP BY home_team_id), away_wins AS (SELECT away_team_id AS team_id, COUNT(*) AS wins FROM games WHERE away_score > home_score GROUP BY away_team_id) SELECT t.name, hw.wins AS home_wins, aw.wins AS away_wins, (hw.wins - aw.wins) AS diff FROM home_wins hw JOIN away_wins aw ON hw.team_id = aw.team_id JOIN teams t ON hw.team_id = t.team_id ORDER BY diff DESC LIMIT 1"
+    }
+  },
+  {
+    "input": "Which player has the highest true shooting percentage this season among players with at least 10 games played and at least 5 field goal attempts per game on average?",
+    "expected": {
+      "values": [0.668],
+      "strings": ["Kevin Walker"]
+    },
+    "metadata": {
+      "sql_query": "SELECT p.first_name || ' ' || p.last_name AS player, ROUND(SUM(pgs.points) * 1.0 / (2.0 * (SUM(pgs.fg_attempted) + 0.44 * SUM(pgs.ft_attempted))), 3) AS ts_pct FROM player_game_stats pgs JOIN players p ON pgs.player_id = p.player_id GROUP BY pgs.player_id HAVING COUNT(*) >= 10 AND SUM(pgs.fg_attempted) * 1.0 / COUNT(*) >= 5 ORDER BY ts_pct DESC LIMIT 1"
+    }
   }
 ]
