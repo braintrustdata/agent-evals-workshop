@@ -42,21 +42,23 @@ Build and evaluate a multi-agent NBA analytics system with [Braintrust](https://
    cd agent-evals-workshop
    ```
 
-2. Create a virtual environment and install dependencies:
+2. If you don't already have a Braintrust account, create one [here](https://www.braintrust.dev/signup) and make an API key in Settings > API keys. Go to Settings > AI Providers and add your OpenAI API key. 
+
+3. Create a virtual environment and install dependencies:
    ```bash
    python -m venv .venv
    source .venv/bin/activate
    pip install -r requirements.txt
    ```
 
-3. Set up your environment:
+4. Set up your environment:
    ```bash
    cp .env.example .env
    ```
    - Edit `.env` and add your `BRAINTRUST_API_KEY`
    - Edit `BRAINTRUST_PROJECT` if multiple people are using the same Braintrust account
 
-4. Generate the synthetic database:
+5. Generate the synthetic database:
    ```bash
    python setup_db.py
    ```
@@ -92,7 +94,7 @@ Run the agent and inspect scoring span in the Braintrust UI.
 
 ## Offline eval
 
-Upload scorers and dataset to braintrust (only do this once)
+Upload scorers and dataset to Braintrust (only do this once)
 
 ```bash
 python setup_offline_eval.py
@@ -149,7 +151,7 @@ agent-evals-workshop/
 
 ## Database schema
 
-The database covers the 2024-25 NBA season (Oct 22, 2024 – Jan 14, 2025) with synthetic data (real team names, fake players and game results).
+The database covers the 2024-25 NBA season (as of Jan 14, 2025) with synthetic data (real team names, fake players and game results).
 
 | Table | Description |
 |-------|-------------|
